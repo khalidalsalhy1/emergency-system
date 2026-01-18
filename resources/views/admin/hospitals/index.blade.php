@@ -1,0 +1,174 @@
+@extends('layouts.admin') 
+
+@section('content')
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">إدارة المستشفيات</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
+                    <li class="breadcrumb-item active">المستشفيات</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                {{-- **** رسائل التنبيه (نجاح/خطأ) **** --}}
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-check"></i> تم!</h5>
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> خطأ!</h5>
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                <div class="card card-primary card-outline shadow">
+                    <div class="card-header border-0">
+                        <h3 class="card-title">قائمة المستشفيات المسجلة</h3>
+                        
+                        <div class="card-tools d-flex align-items-center">
+                            {{-- نموذج البحث --}}
+                            <form action="{{ route('admin.hospitals.index') }}" method="GET" class="form-inline ml-3 mr-4">
+                                <div class="input-group input-group-sm border rounded">
+                                    <input class="form-control form-control-navbar border-0" type="search" name="keyword" 
+                                           placeholder="بحث باسم أو مدينة أو هاتف" aria-label="Search" 
+                                           value="{{ request('keyword') }}"> 
+                                    
+                                    <div class="input-group-append">
+                                        <button class="btn btn-navbar bg-white border-0" type="submit">
+                                            <i class="fas fa-search text-primary"></i>
+                                        </button>
+                                        @if(request()->filled('keyword'))
+                                            <a href="{{ route('admin.hospitals.index') }}" class="btn btn-navbar bg-white border-0">
+                                                <i class="fas fa-times text-danger"></i> 
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            {{-- زر الإضافة --}}
+                            <a href="{{ route('admin.hospitals.create') }}" class="btn btn-primary btn-sm shadow-sm font-weight-bold">
+                                <i class="fas fa-plus-circle"></i> إضافة مستشفى جديد
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-0">
+                        @if($hospitals->isEmpty())
+                            <div class="p-5 text-center">
+                                <div class="alert alert-info d-inline-block shadow-sm px-5">
+                                    @if(request()->filled('keyword'))
+                                        <i class="fas fa-search-minus fa-2x d-block mb-2"></i> لا توجد نتائج مطابقة لـ "{{ request('keyword') }}".
+                                    @else
+                                        <i class="fas fa-hospital fa-2x d-block mb-2"></i> لا توجد مستشفيات مسجلة حالياً.
+                                    @endif
+                                </div>
+                            </div>
+                        @else
+                            <table class="table table-hover table-striped align-middle mb-0">
+                                <thead class="bg-light border-top">
+                                    <tr>
+                                        <th style="width: 60px" class="text-center">#</th>
+                                        <th>اسم المستشفى</th>
+                                        <th>رقم الهاتف</th>
+                                        <th>رقم الطوارئ</th>
+                                        <th>المدينة</th>
+                                        <th class="text-center" style="min-width: 180px">الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($hospitals as $hospital)
+                                    <tr>
+                                        <td class="text-center font-weight-bold">
+                                            {{ $loop->iteration + ($hospitals->perPage() * ($hospitals->currentPage() - 1)) }}
+                                        </td>
+                                        <td class="font-weight-bold">{{ $hospital->hospital_name }}</td>
+                                        <td>{{ $hospital->phone }}</td>
+                                        <td><span class="text-danger font-weight-bold">{{ $hospital->emergency_number ?? '-' }}</span></td>
+                                        <td><span class="badge badge-info px-2 py-1">{{ $hospital->city ?? 'غير محدد' }}</span></td>
+                                        <td class="text-center">
+                                            {{-- تم إخراج الأزرار من btn-group وإضافة هوامش (mr-1) لتفريقها --}}
+                                            
+                                            {{-- 1. زر العرض --}}
+                                            <a href="{{ route('admin.hospitals.show', $hospital->id) }}" 
+                                               class="btn btn-info btn-sm shadow-sm mr-1" 
+                                               title="عرض التفاصيل">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+
+                                            {{-- 2. زر التعديل --}}
+                                            <a href="{{ route('admin.hospitals.edit', $hospital->id) }}" 
+                                               class="btn btn-warning btn-sm shadow-sm mr-1 text-white" 
+                                               title="تعديل">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+
+                                            {{-- 3. زر الحذف --}}
+                                            <button type="button" 
+                                                    class="btn btn-danger btn-sm shadow-sm delete-hospital" 
+                                                    data-id="{{ $hospital->id }}" 
+                                                    title="حذف">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @endif
+                    </div>
+
+                    @if($hospitals->hasPages())
+                        <div class="card-footer clearfix bg-white border-top">
+                            <div class="float-right">
+                                {{ $hospitals->links('pagination::bootstrap-4') }}
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- نموذج الحذف المخفي --}}
+    <form id="deleteForm" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
+</section>
+@endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        const deleteForm = document.getElementById('deleteForm');
+        
+        $('.delete-hospital').on('click', function(e) {
+            e.preventDefault(); 
+            const hospitalId = $(this).data('id'); 
+            
+            if (confirm('هل أنت متأكد من حذف هذا المستشفى؟ سيتم حذف كافة البيانات والمسؤولين المرتبطين به.')) {
+                const deleteUrl = "{{ route('admin.hospitals.destroy', ['hospital' => ':id']) }}";
+                deleteForm.action = deleteUrl.replace(':id', hospitalId);
+                deleteForm.submit();
+            }
+        });
+    });
+</script>
+@endsection
