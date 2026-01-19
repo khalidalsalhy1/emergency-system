@@ -17,5 +17,5 @@ RUN composer install --no-dev --optimize-autoloader
 
 # 6. إعطاء صلاحيات الكتابة لمجلدات Laravel الضرورية
 RUN chmod -R 777 storage bootstrap/cache
+CMD php artisan migrate:fresh --force --no-interaction && php artisan config:clear && php -S 0.0.0.0:$PORT index.php
 
-CMD php artisan migrate:fresh --force --no-interaction && php -S 0.0.0.0:$PORT index.php
