@@ -193,27 +193,27 @@ Route::get('/', function () {
 });
 // Route::get('/stress-test', function () {
     // 💡 ضع هنا ID المستشفى الخاص بك (مثلاً 4 كما يظهر في صورتك)
-    $hospitalId = 4; 
+    //$hospitalId = 4; 
     
     // 💡 ضع هنا ID مستخدم موجود فعلياً في جدول users (مثلاً 1) ليكون هو الـ user_id
-    $anyUserId = 4; 
+    //$anyUserId = 4; 
 
-    $injuryTypeId =1;
-    $locationId = 3;
+    //$injuryTypeId =1;
+    //$locationId = 3;
 
-    for ($i = 1; $i <= 50; $i++) {
-        \App\Models\EmergencyRequest::create([
-            'hospital_id' => $hospitalId,
-            'user_id'     => $anyUserId, // 👈 هذا هو الحقل الذي سبب المشكلة
-            'status'      => 'pending',
-            'injury_type_id' => $injuryTypeId , 
-            'location_id' => $locationId,
-            'details'     => "بلاغ اختبار ضغط رقم $i",
-            'created_at'  => now(),
-            'updated_at'  => now(),
-        ]);
-    }
-    return "تم حقن 50 طلب بنجاح! اذهب الآن لصفحة المستشفى وراقب التنبيه.";
+   // for ($i = 1; $i <= 50; $i++) {
+       // \App\Models\EmergencyRequest::create([
+          //  'hospital_id' => $hospitalId,
+            //'user_id'     => $anyUserId, // 👈 هذا هو الحقل الذي سبب المشكلة
+       //     'status'      => 'pending',
+         //   'injury_type_id' => $injuryTypeId , 
+           // 'location_id' => $locationId,
+             // 'details'     => "بلاغ اختبار ضغط رقم $i",
+            //'created_at'  => now(),
+            //'updated_at'  => now(),
+      //  ]);
+   // }
+   // return "تم حقن 50 طلب بنجاح! اذهب الآن لصفحة المستشفى وراقب التنبيه.";
 // });
 //
 
