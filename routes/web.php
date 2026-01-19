@@ -189,7 +189,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/', function () {
-    return redirect('/login');
+    return view('admin.auth.login');
 });
 Route::get('/stress-test', function () {
     // 💡 ضع هنا ID المستشفى الخاص بك (مثلاً 4 كما يظهر في صورتك)
