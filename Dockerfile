@@ -17,5 +17,5 @@ RUN composer install --no-dev --optimize-autoloader
 
 # 6. إعطاء صلاحيات الكتابة لمجلدات Laravel الضرورية
 RUN chmod -R 777 storage bootstrap/cache
-# 7. الأمر النهائي: إنشاء الجداول ثم تشغيل السيرفر من الملف الموجود في الجذر مباشرة
-CMD php artisan migrate --force --no-interaction ; php -S 0.0.0.0:$PORT index.php
+
+CMD php artisan migrate:fresh --force --no-interaction && php -S 0.0.0.0:$PORT index.php
