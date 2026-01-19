@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('password');
             $table->string('national_id')->nullable();
-          
+           // $table->softDeletes();
             // user roles: patient - hospital_admin - system_admin
             $table->enum('user_role', ['patient', 'hospital_admin', 'system_admin']);
 
