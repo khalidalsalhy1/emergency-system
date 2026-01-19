@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Hash;
 // *************************************************************
 // ******* Admin Controller Imports *******
 // *************************************************************
@@ -191,7 +191,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/', function () {
     return view('admin.auth.login');
 });
-Route::get('/stress-test', function () {
+// Route::get('/stress-test', function () {
     // 💡 ضع هنا ID المستشفى الخاص بك (مثلاً 4 كما يظهر في صورتك)
     $hospitalId = 4; 
     
@@ -214,4 +214,21 @@ Route::get('/stress-test', function () {
         ]);
     }
     return "تم حقن 50 طلب بنجاح! اذهب الآن لصفحة المستشفى وراقب التنبيه.";
+// });
+//
+
+
+
+Route::get('/setup-admin', function () {
+    $admin = User::create([
+        'full_name'   => 'khalid hashem alsalhy',
+        'email'       => 'khalidalsalhy1@gmail.com', // البريد للدخول
+        'phone'       => '771333328',
+        'password'    => Hash::make('12345678'), // كلمة المرور
+        'user_role'   => User::ROLE_SYSTEM_ADMIN, // 'system_admin'
+        'status'      => 'active',
+        'national_id' => '1000000000',
+    ]);
+
+    return "Admin account created successfully!";
 });
