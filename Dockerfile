@@ -11,3 +11,7 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 CMD php -S 0.0.0.0:$PORT index.php
+# ... (ابقِ الأسطر الأولى كما هي)
+
+# الأمر الجديد الذي سيقوم بإنشاء الجداول تلقائياً
+CMD php artisan migrate --force && php -S 0.0.0.0:$PORT index.php
