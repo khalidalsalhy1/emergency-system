@@ -11,4 +11,4 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 CMD php -S 0.0.0.0:$PORT index.php
-CMD php artisan migrate --force ; php -S 0.0.0.0:$PORT index.php
+CMD php artisan migrate --force --no-interaction ; php -S 0.0.0.0:$PORT -t public
