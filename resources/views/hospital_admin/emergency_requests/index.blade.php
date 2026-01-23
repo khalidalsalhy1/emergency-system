@@ -41,13 +41,11 @@
                                         @foreach($statuses as $status) 
                                             <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
                                                 {{ match($status) {
-                                                    'pending' => 'قيد الانتظار',
-                                                    'accepted' => 'مقبولة',
-                                                    'dispatched' => 'أُرسلت',
-                                                    'arrived' => 'وصلت',
-                                                    'completed' => 'مكتملة',
-                                                    'canceled' => 'ملغاة',
-                                                    default => $status,
+                                                     'pending' => 'قيد الانتظار',
+                                                     'in_progress' => 'قيد المعالجة',
+                                                     'completed' => 'مكتملة',
+                                                     'canceled' => 'ملغاة',
+                                                     default => $status,
                                                 } }}
                                             </option>
                                         @endforeach
@@ -87,16 +85,7 @@
                             </thead>
                             <tbody>
                                 @forelse ($requests as $request)
-                                    @php
-                                        // يمكن تعريف دوال مساعدة لتعيين لون الصف هنا بناءً على الحالة
-                                        $rowClass = ''; 
-                                        if ($request->status === 'pending') {
-                                            $rowClass = 'table-warning';
-                                        } elseif ($request->status === 'canceled') {
-                                            $rowClass = 'table-danger text-muted';
-                                        } 
-                                    @endphp
-                                    <tr class="{{ $rowClass }}">
+                                <tr class="@include('admin.emergency_requests.partials.status_badge', ['status' => $request->status, 'row' => true])">
                                         <td>{{ $request->id }}</td>
                                         <td>{{ $request->created_at->format('Y-m-d H:i') }}</td>
                                         <td>
@@ -112,8 +101,8 @@
                                             @endif
                                         </td>
                                         <td>
-                                            {{-- 🚨 التعديل 5: تضمين الـ Partial الخاص بالمستشفى --}}
-                                            @include('hospital_admin.emergency_requests.partials.status_badge', ['status' => $request->status])
+<td>
+    @include('admin.emergency_requests.partials.status_badge', ['status' => $request->status])
                                         </td>
                                         <td>
                                             {{-- 🚨 التعديل 6: استخدام مسار المستشفى 'hospital.requests.show' --}}
@@ -142,5 +131,3 @@
         </div>
     </div>
 @stop
-
-{{-- لا حاجة لأي كود JS خاص بالحذف هنا --}}

@@ -21,8 +21,8 @@
     <section class="content">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card card-primary">
-                    <div class="card-header">
+                <div class="card card-warning">
+                    <div class="card-header d-flex justify-content-between align-items-center ">
                         <h3 class="card-title">تحديث كلمة مرور مسؤول المستشفى</h3>
                     </div>
                     
@@ -112,7 +112,7 @@ unset($__errorArgs, $__bag); ?>
                         </div>
                         
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-warning">
                                 <i class="fas fa-save"></i> تحديث كلمة المرور
                             </button>
                             

@@ -93,13 +93,13 @@
             </a>
           </li>
           
-          
+          <!-- 
           <li class="nav-item">
             <a href="<?php echo e(route('admin.health_guides.index')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.health_guides.*') ? 'active' : ''); ?>">
               <i class="nav-icon fas fa-book-medical"></i>
               <p>إدارة الإرشادات الصحية</p>
             </a>
-          </li>
+          </li> -->
           
           
           <li class="nav-item">

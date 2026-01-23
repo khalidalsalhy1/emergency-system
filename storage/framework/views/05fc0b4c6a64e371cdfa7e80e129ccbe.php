@@ -41,13 +41,11 @@
                                         <?php $__currentLoopData = $statuses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $status): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?> 
                                             <option value="<?php echo e($status); ?>" <?php echo e(request('status') == $status ? 'selected' : ''); ?>>
                                                 <?php echo e(match($status) {
-                                                    'pending' => 'قيد الانتظار',
-                                                    'accepted' => 'مقبولة',
-                                                    'dispatched' => 'أُرسلت',
-                                                    'arrived' => 'وصلت',
-                                                    'completed' => 'مكتملة',
-                                                    'canceled' => 'ملغاة',
-                                                    default => $status,
+                                                     'pending' => 'قيد الانتظار',
+                                                     'in_progress' => 'قيد المعالجة',
+                                                     'completed' => 'مكتملة',
+                                                     'canceled' => 'ملغاة',
+                                                     default => $status,
                                                 }); ?>
 
                                             </option>
@@ -88,16 +86,7 @@
                             </thead>
                             <tbody>
                                 <?php $__empty_1 = true; $__currentLoopData = $requests; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $request): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                    <?php
-                                        // يمكن تعريف دوال مساعدة لتعيين لون الصف هنا بناءً على الحالة
-                                        $rowClass = ''; 
-                                        if ($request->status === 'pending') {
-                                            $rowClass = 'table-warning';
-                                        } elseif ($request->status === 'canceled') {
-                                            $rowClass = 'table-danger text-muted';
-                                        } 
-                                    ?>
-                                    <tr class="<?php echo e($rowClass); ?>">
+                                <tr class="<?php echo $__env->make('admin.emergency_requests.partials.status_badge', ['status' => $request->status, 'row' => true], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>">
                                         <td><?php echo e($request->id); ?></td>
                                         <td><?php echo e($request->created_at->format('Y-m-d H:i')); ?></td>
                                         <td>
@@ -113,8 +102,8 @@
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            
-                                            <?php echo $__env->make('hospital_admin.emergency_requests.partials.status_badge', ['status' => $request->status], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<td>
+    <?php echo $__env->make('admin.emergency_requests.partials.status_badge', ['status' => $request->status], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                                         </td>
                                         <td>
                                             
@@ -144,7 +133,5 @@
         </div>
     </div>
 <?php $__env->stopSection(); ?>
-
-
 
 <?php echo $__env->make('layouts.hospital', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\emergency_response_system\resources\views/hospital_admin/emergency_requests/index.blade.php ENDPATH**/ ?>

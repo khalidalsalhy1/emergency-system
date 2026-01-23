@@ -114,7 +114,7 @@
 
                                             {{-- 2. زر التعديل --}}
                                             <a href="{{ route('admin.hospitals.edit', $hospital->id) }}" 
-                                               class="btn btn-warning btn-sm shadow-sm mr-1 text-white" 
+                                                class="btn btn-xs btn-warning btn-sm" 
                                                title="تعديل">
                                                 <i class="fas fa-edit"></i>
                                             </a>

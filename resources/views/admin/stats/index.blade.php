@@ -64,12 +64,12 @@
                     </div>
                 </div>
                 
-                {{-- 3. الطلبات بانتظار الإسناد (اليوم) --}}
+                {{-- 3. الطلبات بانتظار قبول  (اليوم) --}}
                 <div class="col-lg-4 col-6">
                     <div class="small-box bg-danger">
                         <div class="inner">
                             <h3>{{ $pendingRequestsToday }}</h3>
-                            <p>بانتظار الإسناد اليوم</p>
+                            <p>بانتظار القبول اليوم</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-exclamation-triangle"></i>

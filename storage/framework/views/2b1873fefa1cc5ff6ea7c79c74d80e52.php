@@ -42,7 +42,6 @@
                             <td><?php echo e($patient->email ?? 'N/A'); ?></td>
                             <td><?php echo e($patient->national_id ?? 'N/A'); ?></td>
                             <td>
-                                
                                 <span class="badge badge-<?php echo e($patient->status === 'active' ? 'success' : 'danger'); ?>">
                                     <?php echo e($patient->status === 'active' ? 'نشط' : 'غير نشط'); ?>
 
@@ -52,15 +51,15 @@
                             <td><?php echo e($patient->created_at->format('Y-m-d')); ?></td>
                             <td>
                                 
-                                <a href="<?php echo e(route('admin.patients.edit', $patient)); ?>" class="btn btn-primary btn-sm mx-1">
-                                    <i class="fas fa-edit"></i>
+                                <a href="<?php echo e(route('admin.patients.edit', $patient)); ?>"  class="btn btn-xs btn-warning btn-sm" >
+                                    <i class="fas fa-edit "></i>
                                 </a>
 
                                 
                                 <form action="<?php echo e(route('admin.patients.destroy', $patient)); ?>" method="POST" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من حذف هذا المريض؟');">
                                     <?php echo csrf_field(); ?>
                                     <?php echo method_field('DELETE'); ?>
-                                    <button type="submit" class="btn btn-danger btn-sm mx-1">
+                                    <button type="submit" class="btn btn-danger btn-sm mx-1 shadow-sm">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

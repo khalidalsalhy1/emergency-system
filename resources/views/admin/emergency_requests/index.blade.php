@@ -101,7 +101,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>تاريخ الطلب</th>
-                                    <th>نوع الطوارئ</th>
+                                    <th>نوع الأصابة</th>
                                     <th>المريض</th>
                                     <th>المستشفى المسند</th>
                                     <th>الحالة</th>
@@ -110,14 +110,17 @@
                             </thead>
                             <tbody>
                                 @forelse ($requests as $request)
-                                    <tr class="{{ $request->status == 'pending' ? 'table-danger' : '' }}">
+                                    <tr class="@include('admin.emergency_requests.partials.status_badge', ['status' => $request->status, 'row' => true])">
+
                                         <td>{{ $request->id }}</td>
                                         <td>{{ $request->created_at->format('Y-m-d H:i') }}</td>
                                         <td>
-                                            {{-- عرض نوع الإصابة أو وصف الطوارئ --}}
+                                            {{-- عرض نوع الإصابة --}}
                                             {{ $request->injuryType->injury_name ?? 'غير محدد' }}
                                         </td>
                                         <td>{{ $request->user->full_name ?? 'مستخدم محذوف' }}</td>
+                                        
+                                        {{-- عمود المستشفى --}}
                                         <td>
                                             @if($request->hospital)
                                                 {{ $request->hospital->hospital_name }}
@@ -125,28 +128,27 @@
                                                 <span class="badge badge-warning">لم يتم الإسناد بعد</span>
                                             @endif
                                         </td>
-                                        <td>
-                                            {{-- دالة مساعدة لعرض لون الحالة --}}
-                                            @include('admin.emergency_requests.partials.status_badge', ['status' => $request->status])
-                                        </td>
+
+                                        {{-- عمود الحالة بالعربية (تم إصلاح التكرار) --}}
+<td>
+    @include('admin.emergency_requests.partials.status_badge', ['status' => $request->status])
+</td>                                        
+                                        {{-- عمود الإجراءات --}}
                                         <td>
                                             <a href="{{ route('admin.emergency_requests.show', $request->id) }}" class="btn btn-xs btn-info" title="التفاصيل والتدخل">
                                                 <i class="fas fa-eye"></i> تفاصيل
                                             </a>
                                             
-                                            {{-- زر الحذف الطارئ (للمدير العام فقط) --}}
                                             <button type="button" class="btn btn-xs btn-danger delete-btn" data-id="{{ $request->id }}" title="حذف دائم">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                             
-                                            {{-- نموذج الحذف المخفي (ضروري لإرسال DELETE) --}}
                                             <form id="delete-form-{{ $request->id }}" 
                                                   action="{{ route('admin.emergency_requests.destroy', $request->id) }}" 
                                                   method="POST" style="display: none;">
                                                 @csrf
                                                 @method('DELETE')
                                             </form>
-
                                         </td>
                                     </tr>
                                 @empty

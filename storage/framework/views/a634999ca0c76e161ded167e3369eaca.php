@@ -39,7 +39,7 @@
   </aside>
 
   <footer class="main-footer">
-    <strong>جميع الحقوق محفوظة &copy; <?php echo e(date('Y')); ?> نظام الإسعاف الطارئ</strong>
+    <!-- <strong>جميع الحقوق محفوظة &copy; <?php echo e(date('Y')); ?> نظام الإسعاف الطارئ</strong> -->
   </footer>
 </div>
 

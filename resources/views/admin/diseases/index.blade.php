@@ -45,12 +45,12 @@
                                         <td>{{ $disease->disease_name }}</td>
                                         <td>{{ Str::limit($disease->description, 70) ?? 'لا يوجد وصف' }}</td>
                                         <td>
-                                            <a href="{{ route('admin.diseases.edit', $disease->id) }}" class="btn btn-xs btn-warning" title="تعديل">
-                                                <i class="fas fa-edit"></i> تعديل
+                                            <a href="{{ route('admin.diseases.edit', $disease->id) }}" class="btn btn-xs btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i> 
                                             </a>
                                             
-                                            <button type="button" class="btn btn-xs btn-danger delete-btn" data-id="{{ $disease->id }}" title="حذف دائم">
-                                                <i class="fas fa-trash"></i> حذف
+                                            <button type="button" class="btn btn-danger btn-sm mx-1 shadow-sm" data-id="{{ $disease->id }}" title="حذف دائم">
+                                                <i class="fas fa-trash"></i> 
                                             </button>
                                             
                                             <form id="delete-form-{{ $disease->id }}" 

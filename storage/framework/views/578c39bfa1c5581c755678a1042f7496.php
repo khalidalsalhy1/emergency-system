@@ -103,7 +103,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>تاريخ الطلب</th>
-                                    <th>نوع الطوارئ</th>
+                                    <th>نوع الأصابة</th>
                                     <th>المريض</th>
                                     <th>المستشفى المسند</th>
                                     <th>الحالة</th>
@@ -112,7 +112,8 @@
                             </thead>
                             <tbody>
                                 <?php $__empty_1 = true; $__currentLoopData = $requests; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $request): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                    <tr class="<?php echo e($request->status == 'pending' ? 'table-danger' : ''); ?>">
+                                    <tr class="<?php echo $__env->make('admin.emergency_requests.partials.status_badge', ['status' => $request->status, 'row' => true], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>">
+
                                         <td><?php echo e($request->id); ?></td>
                                         <td><?php echo e($request->created_at->format('Y-m-d H:i')); ?></td>
                                         <td>
@@ -121,6 +122,8 @@
 
                                         </td>
                                         <td><?php echo e($request->user->full_name ?? 'مستخدم محذوف'); ?></td>
+                                        
+                                        
                                         <td>
                                             <?php if($request->hospital): ?>
                                                 <?php echo e($request->hospital->hospital_name); ?>
@@ -129,20 +132,20 @@
                                                 <span class="badge badge-warning">لم يتم الإسناد بعد</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td>
-                                            
-                                            <?php echo $__env->make('admin.emergency_requests.partials.status_badge', ['status' => $request->status], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-                                        </td>
+
+                                        
+<td>
+    <?php echo $__env->make('admin.emergency_requests.partials.status_badge', ['status' => $request->status], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+</td>                                        
+                                        
                                         <td>
                                             <a href="<?php echo e(route('admin.emergency_requests.show', $request->id)); ?>" class="btn btn-xs btn-info" title="التفاصيل والتدخل">
                                                 <i class="fas fa-eye"></i> تفاصيل
                                             </a>
                                             
-                                            
                                             <button type="button" class="btn btn-xs btn-danger delete-btn" data-id="<?php echo e($request->id); ?>" title="حذف دائم">
                                                 <i class="fas fa-trash"></i>
                                             </button>
-                                            
                                             
                                             <form id="delete-form-<?php echo e($request->id); ?>" 
                                                   action="<?php echo e(route('admin.emergency_requests.destroy', $request->id)); ?>" 
@@ -150,7 +153,6 @@
                                                 <?php echo csrf_field(); ?>
                                                 <?php echo method_field('DELETE'); ?>
                                             </form>
-
                                         </td>
                                     </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>

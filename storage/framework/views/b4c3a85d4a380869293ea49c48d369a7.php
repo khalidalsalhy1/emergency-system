@@ -69,7 +69,7 @@
                     <div class="small-box bg-danger">
                         <div class="inner">
                             <h3><?php echo e($pendingRequestsToday); ?></h3>
-                            <p>بانتظار الإسناد اليوم</p>
+                            <p>بانتظار القبول اليوم</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-exclamation-triangle"></i>

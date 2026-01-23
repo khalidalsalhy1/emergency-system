@@ -23,15 +23,9 @@
         
         {{-- مصفوفة الترجمة المستخدمة في الـ View --}}
         @php
-            $statusMapping = [
-                'pending' => 'معلق',
-                'in_progress' => 'قيد التنفيذ',
-                'completed' => 'مكتمل',
-                'canceled' => 'ملغي',
-            ];
             $requestTypeMapping = [
                 'DISPATCH' => 'طلب إرسال إسعاف',
-                'NOTIFY' => 'إبلاغ/إشعار بحالة',
+                'NOTIFY' => 'إبلاغ/بحالة طارئة ',
             ];
             $displayRequestType = $requestTypeMapping[$emergencyRequest->request_type] ?? 'غير معروف';
         @endphp
@@ -66,27 +60,27 @@
                         <div class="col-md-6">
                             <h4><i class="fas fa-clipboard-list"></i> تفاصيل الطوارئ</h4>
                             
-                            {{-- 🛠️ التعديل 1: إضافة نوع الطلب --}}
                             <p><strong>نوع الطلب:</strong> <span class="badge badge-primary">{{ $displayRequestType }}</span></p>
 
                             <p><strong>تاريخ الإنشاء:</strong> {{ $emergencyRequest->created_at->format('Y-m-d H:i') }}</p>
                             
-                            {{-- 🛠️ التعديل 2: تصحيح التسمية من "نوع الطوارئ" إلى "نوع الإصابة" --}}
                             <p><strong>نوع الإصابة:</strong> {{ $emergencyRequest->injuryType->injury_name ?? 'غير محدد' }}</p>
                             
                             <p><strong>وصف المريض:</strong> {{ $emergencyRequest->description ?? 'لا يوجد وصف' }}</p>
-                            <p><strong>الحالة الحالية:</strong> @include('admin.emergency_requests.partials.status_badge', ['status' => $emergencyRequest->status])</p>
+                            
+                            {{-- تم تعديل عرض الحالة هنا ليصبح بالعربي --}}
+<p><strong>الحالة الحالية:</strong> 
+    @include('admin.emergency_requests.partials.status_badge', ['status' => $emergencyRequest->status])
+</p>
                             <p><strong>المستشفى المسند:</strong> {{ $emergencyRequest->hospital->hospital_name ?? 'لم يتم الإسناد' }}</p>
                             
                             <hr>
 
-                            {{-- 🎯 المنطقة الجديدة 1: عرض سبب الرفض النهائي (من حقل الطلب الرئيسي) --}}
                             @if($emergencyRequest->rejection_reason) 
                                 <p class="text-danger"><strong>سبب الرفض النهائي:</strong> {{ $emergencyRequest->rejection_reason }}</p>
                                 <hr>
                             @endif
                             
-                            {{-- 🎯 المنطقة الجديدة 2: عرض آخر ملاحظة إدارية عامة (من آخر سجل تاريخ) --}}
                             @php 
                                 $lastHistory = $emergencyRequest->statusHistory->first(); 
                             @endphp
@@ -112,7 +106,6 @@
                     @csrf
                     @method('PUT')
                     <div class="card-body">
-                        {{-- تغيير الحالة --}}
                         <div class="form-group">
                             <label for="status">تغيير الحالة يدوياً</label>
                             <select name="status" id="status" class="form-control @error('status') is-invalid @enderror">
@@ -126,7 +119,6 @@
                             @error('status') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
 
-                        {{-- تغيير المستشفى المسند --}}
                         <div class="form-group">
                             <label for="hospital_id">إعادة إسناد إلى مستشفى آخر</label>
                             <select name="hospital_id" id="hospital_id" class="form-control @error('hospital_id') is-invalid @enderror">
@@ -140,7 +132,6 @@
                             @error('hospital_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
                         
-                        {{-- سبب التعديل (لتسجيله في تاريخ الحالة) --}}
                         <div class="form-group">
                             <label for="reason">سبب التعديل الإداري (يظهر في سجل التاريخ)</label>
                             <textarea name="reason" id="reason" class="form-control @error('reason') is-invalid @enderror" rows="2">{{ old('reason') }}</textarea>
@@ -166,7 +157,8 @@
                             <li class="item">
                                 <div class="product-info">
                                     <span class="product-title">
-                                        {{ $statusMapping[$history->status] ?? ucfirst(str_replace('_', ' ', $history->status)) }}
+                                        {{-- تم تعديل الترجمة هنا --}}
+                                        {{ $statusMapping[$history->status] ?? $history->status }}
                                         <span class="badge badge-secondary float-right">{{ $history->created_at->format('Y-m-d H:i:s') }}</span>
                                     </span>
                                     <span class="product-description">
@@ -191,14 +183,13 @@
                 <div class="card-header">
                     <h3 class="card-title"><i class="fas fa-map-marker-alt"></i> موقع الطوارئ</h3>
                 </div>
-                <div class="card-body p-0"> {{-- p-0 لملء الخريطة تماماً --}}
+                <div class="card-body p-0">
                     @if ($emergencyRequest->location)
                         <div class="p-2 border-bottom bg-light">
                             <small class="d-block"><strong>العنوان:</strong> {{ $emergencyRequest->location->address ?? 'غير متوفر' }}</small>
                             <small class="d-block"><strong>الإحداثيات:</strong> {{ $emergencyRequest->location->latitude }}, {{ $emergencyRequest->location->longitude }}</small>
                         </div>
                         
-                        {{-- الخريطة تملأ الحاوية --}}
                         <div style="width: 100%; height: 350px;">
                             <iframe 
                                 width="100%" 

@@ -29,23 +29,48 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                
+                                <?php
+                                    $statusMapping = [
+                                        'pending' => 'قيد الانتظار',
+                                        'in_progress' => 'قيد التنفيذ',
+                                        'completed' => 'مكتملة',
+                                        'canceled' => 'ملغاة',
+                                    ];
+                                    $statusClasses = [
+                                        'pending' => 'badge-danger',
+                                        'in_progress' => 'badge-success',
+                                        'completed' => 'badge-primary',
+                                        'canceled' => 'badge-secondary',
+                                    ];
+                                ?>
+
                                 <?php $__empty_1 = true; $__currentLoopData = $histories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $history): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                     <tr>
                                         <td><?php echo e($history->id); ?></td>
                                         <td>
-                                            <a href="<?php echo e(route('admin.emergency_requests.show', $history->emergencyRequest->id)); ?>">
-                                                #<?php echo e($history->emergencyRequest->id); ?>
+                                            <?php if($history->emergencyRequest): ?>
+                                                
+                                                <a href="<?php echo e(route('admin.emergency_requests.show', $history->emergencyRequest->id)); ?>" class="text-dark font-weight-bold">
+                                                    #<?php echo e($history->emergencyRequest->id); ?>
 
-                                            </a>
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="text-muted">طلب محذوف</span>
+                                            <?php endif; ?>
                                         </td>
                                         <td>
-                                            <span class="badge badge-<?php echo e($history->isCompleted() ? 'success' : ($history->isPending() ? 'warning' : 'info')); ?>">
-                                                <?php echo e($history->status); ?>
+                                            
+                                            <span class="badge <?php echo e($statusClasses[$history->status] ?? 'badge-info'); ?>">
+                                                <?php echo e($statusMapping[$history->status] ?? $history->status); ?>
 
                                             </span>
                                         </td>
-                                        <td><?php echo e($history->changedBy->full_name ?? 'غير محدد'); ?></td>
-                                        
+                                        <td>
+                                            
+                                            <?php echo e($history->changedBy->full_name ?? 'النظام/المريض'); ?>
+
+                                        </td>
                                         <td>
                                             <?php echo e(($history->changed_at ?? $history->created_at) ? ($history->changed_at ?? $history->created_at)->format('Y-m-d H:i') : 'غير مسجل'); ?>
 

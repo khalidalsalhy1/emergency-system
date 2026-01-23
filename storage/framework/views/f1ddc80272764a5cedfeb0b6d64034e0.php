@@ -67,7 +67,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text bg-danger text-white"><i class="fas fa-ambulance"></i></span>
                                         </div>
-                                        <input type="text" name="emergency_phone" id="emergency_number" class="form-control" required value="<?php echo e(old('emergency_number')); ?>" placeholder="رقم العمليات">
+                                        <input type="text" name="emergency_number" id="emergency_number" class="form-control" required value="<?php echo e(old('emergency_number')); ?>" placeholder="رقم العمليات">
                                     </div>
                                 </div>
                             </div>

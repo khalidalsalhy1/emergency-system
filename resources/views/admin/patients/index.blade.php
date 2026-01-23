@@ -42,7 +42,6 @@
                             <td>{{ $patient->email ?? 'N/A' }}</td>
                             <td>{{ $patient->national_id ?? 'N/A' }}</td>
                             <td>
-                                {{-- استخدام 'inactive' --}}
                                 <span class="badge badge-{{ $patient->status === 'active' ? 'success' : 'danger' }}">
                                     {{ $patient->status === 'active' ? 'نشط' : 'غير نشط' }}
                                 </span>
@@ -50,16 +49,16 @@
                             <td>{{ $patient->medicalRecord->blood_type ?? 'N/A' }}</td>
                             <td>{{ $patient->created_at->format('Y-m-d') }}</td>
                             <td>
-                                {{-- زر التعديل (أزرق/رئيسي) --}}
-                                <a href="{{ route('admin.patients.edit', $patient) }}" class="btn btn-primary btn-sm mx-1">
-                                    <i class="fas fa-edit"></i>
+                                {{-- تم تغيير الكلاس هنا من btn-primary إلى btn-warning فقط --}}
+                                <a href="{{ route('admin.patients.edit', $patient) }}"  class="btn btn-xs btn-warning btn-sm" >
+                                    <i class="fas fa-edit "></i>
                                 </a>
 
                                 {{-- نموذج الحذف (أحمر/تحذيري) --}}
                                 <form action="{{ route('admin.patients.destroy', $patient) }}" method="POST" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من حذف هذا المريض؟');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm mx-1">
+                                    <button type="submit" class="btn btn-danger btn-sm mx-1 shadow-sm">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

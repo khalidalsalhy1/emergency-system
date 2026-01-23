@@ -72,7 +72,7 @@ class DashboardController extends Controller
             'completed_requests'      => $completedRequests,
             'today_requests'          => $todayRequests,
             'assigned_patients'       => $totalAssignedPatients,
-            'hospital_name'           => $user->hospital->name ?? 'المستشفى', 
+            'hospital_name'           => $user->hospital->hospital_name ?? 'المستشفى', 
         ];
         
         // 4. إرسال البيانات إلى الـ View

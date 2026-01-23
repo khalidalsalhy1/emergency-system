@@ -29,21 +29,45 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {{-- تعريف مصفوفات المطابقة للتعريب والألوان --}}
+                                @php
+                                    $statusMapping = [
+                                        'pending' => 'قيد الانتظار',
+                                        'in_progress' => 'قيد التنفيذ',
+                                        'completed' => 'مكتملة',
+                                        'canceled' => 'ملغاة',
+                                    ];
+                                    $statusClasses = [
+                                        'pending' => 'badge-danger',
+                                        'in_progress' => 'badge-success',
+                                        'completed' => 'badge-primary',
+                                        'canceled' => 'badge-secondary',
+                                    ];
+                                @endphp
+
                                 @forelse ($histories as $history)
                                     <tr>
                                         <td>{{ $history->id }}</td>
                                         <td>
-                                            <a href="{{ route('admin.emergency_requests.show', $history->emergencyRequest->id) }}">
-                                                #{{ $history->emergencyRequest->id }}
-                                            </a>
+                                            @if($history->emergencyRequest)
+                                                {{-- تعديل لون رقم الطلب للأسود باستخدام text-dark --}}
+                                                <a href="{{ route('admin.emergency_requests.show', $history->emergencyRequest->id) }}" class="text-dark font-weight-bold">
+                                                    #{{ $history->emergencyRequest->id }}
+                                                </a>
+                                            @else
+                                                <span class="text-muted">طلب محذوف</span>
+                                            @endif
                                         </td>
                                         <td>
-                                            <span class="badge badge-{{ $history->isCompleted() ? 'success' : ($history->isPending() ? 'warning' : 'info') }}">
-                                                {{ $history->status }}
+                                            {{-- تطبيق الألوان والمسميات الموحدة --}}
+                                            <span class="badge {{ $statusClasses[$history->status] ?? 'badge-info' }}">
+                                                {{ $statusMapping[$history->status] ?? $history->status }}
                                             </span>
                                         </td>
-                                        <td>{{ $history->changedBy->full_name ?? 'غير محدد' }}</td>
-                                        {{-- 🎯 التصحيح النهائي: استخدام changed_at وفي حال كان null نعتمد على created_at --}}
+                                        <td>
+                                            {{-- الخط الطبيعي للاسم --}}
+                                            {{ $history->changedBy->full_name ?? 'النظام/المريض' }}
+                                        </td>
                                         <td>
                                             {{ ($history->changed_at ?? $history->created_at) ? ($history->changed_at ?? $history->created_at)->format('Y-m-d H:i') : 'غير مسجل' }}
                                         </td>

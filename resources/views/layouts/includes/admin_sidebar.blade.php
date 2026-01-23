@@ -93,13 +93,13 @@
             </a>
           </li>
           
-          {{-- إدارة الإرشادات الصحية (Health Guides) --}}
+          <!-- {{-- إدارة الإرشادات الصحية (Health Guides) --}}
           <li class="nav-item">
             <a href="{{ route('admin.health_guides.index') }}" class="nav-link {{ request()->routeIs('admin.health_guides.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-book-medical"></i>
               <p>إدارة الإرشادات الصحية</p>
             </a>
-          </li>
+          </li> -->
           
           {{-- 🌟 تم التعديل: إدارة الأمراض المزمنة - أيقونة مضمونة للتشغيل المحلي 🌟 --}}
           <li class="nav-item">

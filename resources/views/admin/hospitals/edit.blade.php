@@ -1,110 +1,176 @@
+{{-- resources/views/admin/hospitals/edit.blade.php --}}
+
 @extends('layouts.admin') 
 
-@section('content')
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                {{-- عرض اسم المستشفى الحالي في العنوان --}}
-                <h1 class="m-0 text-dark">تعديل المستشفى: {{ $hospital->hospital_name }}</h1>
-            </div><div class="col-sm-6">
-                <ol class="breadcrumb float-sm-left">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.hospitals.index') }}">المستشفيات</a></li>
-                    <li class="breadcrumb-item active">تعديل</li>
-                </ol>
-            </div></div></div></div>
-<section class="content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card card-warning"> 
-                    <div class="card-header">
-                        <h3 class="card-title">تعديل بيانات المستشفى والموقع</h3>
-                    </div>
-                    
-                    {{-- **** نموذج التعديل الفعلي **** --}}
-                    <form action="{{ route('admin.hospitals.update', $hospital->id) }}" method="POST">
-                        @csrf
-                        @method('PUT') {{-- توجيه الطلب إلى دالة updateWeb --}}
-                        
-                        <div class="card-body">
-                            
-                            {{-- رسائل الأخطاء (إذا وجدت) --}}
-                            @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-                            
-                            {{-- بيانات المستشفى --}}
-                            <fieldset class="mb-4 p-3 border">
-                                <legend class="w-auto px-2">معلومات المستشفى الأساسية</legend>
-                                <div class="form-group">
-                                    <label for="hospital_name">اسم المستشفى</label>
-                                    <input type="text" name="hospital_name" class="form-control" id="hospital_name" 
-                                           value="{{ old('hospital_name', $hospital->hospital_name) }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="phone">رقم الهاتف الأساسي</label>
-                                    <input type="text" name="phone" class="form-control" id="phone" 
-                                           value="{{ old('phone', $hospital->phone) }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="emergency_number">رقم الطوارئ</label>
-                                    <input type="text" name="emergency_number" class="form-control" id="emergency_number" 
-                                           value="{{ old('emergency_number', $hospital->emergency_number) }}">
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 form-group">
-                                        <label for="city">المدينة</label>
-                                        <input type="text" name="city" class="form-control" id="city" 
-                                               value="{{ old('city', $hospital->city) }}" required>
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="district">المنطقة</label>
-                                        <input type="text" name="district" class="form-control" id="district" 
-                                               value="{{ old('district', $hospital->district) }}">
-                                    </div>
-                                </div>
-                            </fieldset>
+@section('title', 'تعديل مستشفى: ' . $hospital->hospital_name)
 
-                            {{-- بيانات الموقع (تم التصحيح لاستخدام العلاقة) --}}
-                            <fieldset class="mb-4 p-3 border">
-                                <legend class="w-auto px-2">بيانات الموقع الجغرافي</legend>
-                                <div class="row">
-                                    <div class="col-md-6 form-group">
-                                        <label for="latitude">خط العرض (Latitude)</label>
-                                        <input type="text" name="latitude" class="form-control" id="latitude" 
-                                               {{-- 🚨 التعديل: استخدام optional($hospital->location)->latitude --}}
-                                               value="{{ old('latitude', optional($hospital->location)->latitude) }}" required>
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="longitude">خط الطول (Longitude)</label>
-                                        <input type="text" name="longitude" class="form-control" id="longitude" 
-                                               {{-- 🚨 التعديل: استخدام optional($hospital->location)->longitude --}}
-                                               value="{{ old('longitude', optional($hospital->location)->longitude) }}" required>
-                                    </div>
-                                </div>
+@section('content_header')
+    <h1><i class="fas fa-edit"></i> تعديل بيانات المستشفى</h1>
+@stop
+
+@section('content')
+<div class="container-fluid">
+    {{-- عرض تنبيهات الأخطاء --}}
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible shadow-sm">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h5><i class="icon fas fa-exclamation-triangle"></i> يرجى تصحيح الأخطاء التالية:</h5>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    {{-- التعديل الجوهري: استخدام card-warning بدون card-outline ليكون الهيدر أصفر بالكامل --}}
+    <div class="card card-warning shadow  ">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center ">
+            <h3 class="card-title font-weight-bold text-dark m-0" >
+                تعديل البيانات ل: {{ $hospital->hospital_name }}
+            </h3>
+        </div>
+
+        <form action="{{ route('admin.hospitals.update', $hospital->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="card-body">
+                <div class="row">
+                    {{-- القسم الأيمن: البيانات النصية --}}
+                    <div class="col-md-5 border-left">
+                        <h4 class="text-dark mb-3"><i class="fas fa-id-card"></i> المعلومات الأساسية</h4>
+                        
+                        <div class="form-group">
+                            <label for="hospital_name">اسم المستشفى <span class="text-danger">*</span></label>
+                            <input type="text" name="hospital_name" id="hospital_name" class="form-control" required value="{{ old('hospital_name', $hospital->hospital_name) }}">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="address">العنوان التفصيلي</label>
-                                    <textarea name="address" class="form-control" id="address">{{ old('address', optional($hospital->location)->address) }}</textarea>
+                                    <label for="city">المدينة <span class="text-danger">*</span></label>
+                                    <input type="text" name="city" id="city" class="form-control" required value="{{ old('city', $hospital->city) }}">
                                 </div>
-                            </fieldset>
-                            
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="district">المديرية <span class="text-danger">*</span></label>
+                                    <input type="text" name="district" id="district" class="form-control" required value="{{ old('district', $hospital->district) }}">
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-warning"><i class="fas fa-edit"></i> تحديث البيانات</button>
-                            <a href="{{ route('admin.hospitals.index') }}" class="btn btn-default float-left">إلغاء</a>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="phone">رقم الهاتف (عام) <span class="text-danger">*</span></label>
+                                    <input type="text" name="phone" id="phone" class="form-control" required value="{{ old('phone', $hospital->phone) }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="emergency_number">رقم الطوارئ <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-danger text-white"><i class="fas fa-ambulance"></i></span>
+                                        </div>
+                                        <input type="text" name="emergency_number" id="emergency_number" class="form-control" required value="{{ old('emergency_number', $hospital->emergency_number) }}">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </form>
+
+                        <div class="form-group">
+                            <label for="email">البريد الإلكتروني</label>
+                            <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $hospital->email) }}">
+                        </div>
+
+                        <hr>
+                        <h4 class="text-dark mb-3"><i class="fas fa-map-marked-alt"></i> إحداثيات الموقع الجغرافي</h4>
+                        
+                        <div class="p-2 mb-3 border rounded bg-light shadow-sm">
+                            <label class="small font-weight-bold text-muted">تحديث سريع للإحداثيات (لصق من الخرائط):</label>
+                            <input type="text" id="quick_paste" class="form-control form-control-sm border-warning" placeholder="مثال: 15.36, 44.19" onchange="processPaste(this.value)">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="lat_input">خط العرض (Lat)</label>
+                                <input type="text" name="latitude" id="lat_input" class="form-control border-warning" required value="{{ old('latitude', optional($hospital->location)->latitude) }}">
+                            </div>
+                            <div class="col-6">
+                                <label for="lng_input">خط الطول (Lng)</label>
+                                <input type="text" name="longitude" id="lng_input" class="form-control border-warning" required value="{{ old('longitude', optional($hospital->location)->longitude) }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="address">العنوان التفصيلي</label>
+                            <input type="text" name="address" id="address" class="form-control" value="{{ old('address', optional($hospital->location)->address) }}">
+                        </div>
+                    </div>
+
+                    {{-- القسم الأيسر: المعاينة المباشرة للخريطة --}}
+                    <div class="col-md-7">
+                        <div class="form-group">
+                            <label>موقع المستشفى الحالي على الخريطة:</label>
+                        </div>
+
+                        <div class="map-container shadow-sm" style="width: 100%; height: 500px; border: 3px solid #ffc107; border-radius: 8px; overflow: hidden;">
+                            <iframe 
+                                id="hospital_map_frame"
+                                width="100%" 
+                                height="100%" 
+                                frameborder="0" 
+                                style="border:0;" 
+                                src="https://maps.google.com/maps?q={{ optional($hospital->location)->latitude }},{{ optional($hospital->location)->longitude }}&hl=ar&z=16&output=embed">
+                            </iframe>
+                        </div>
+                        <button type="button" onclick="loadMapFrame()" class="btn btn-outline-warning btn-sm btn-block mt-2 font-weight-bold">
+                            <i class="fas fa-sync-alt"></i> إعادة تحميل الخريطة بناءً على الإحداثيات
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <div class="card-footer bg-light">
+                {{-- زر الحفظ بنفس تنسيق صفحة الأمراض --}}
+                <button type="submit" class="btn btn-warning px-5 shadow font-weight-bold text-dark">
+                    <i class="fas fa-save mr-1"></i> حفظ التعديلات
+                </button>
+                <a href="{{ route('admin.hospitals.index') }}" class="btn btn-default float-left font-weight-bold">إلغاء</a>
+            </div>
+        </form>
     </div>
-</section>
-@endsection
+</div>
+
+<script>
+    // تنفيذ تحميل الخريطة عند فتح الصفحة مباشرة
+    window.onload = function() {
+        loadMapFrame();
+    };
+
+    function processPaste(value) {
+        if (!value) return;
+        var parts = value.split(',');
+        if (parts.length >= 2) {
+            document.getElementById('lat_input').value = parts[0].trim();
+            document.getElementById('lng_input').value = parts[1].trim();
+            loadMapFrame();
+            document.getElementById('quick_paste').value = '';
+        }
+    }
+
+    function loadMapFrame() {
+        var lat = document.getElementById('lat_input').value;
+        var lng = document.getElementById('lng_input').value;
+        var frame = document.getElementById('hospital_map_frame');
+        if(lat && lng) {
+            frame.src = "https://maps.google.com/maps?q=" + lat + "," + lng + "&hl=ar&z=16&output=embed";
+        }
+    }
+
+    document.getElementById('lat_input').addEventListener('change', loadMapFrame);
+    document.getElementById('lng_input').addEventListener('change', loadMapFrame);
+</script>
+@stop

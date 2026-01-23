@@ -23,15 +23,9 @@
         
         
         <?php
-            $statusMapping = [
-                'pending' => 'معلق',
-                'in_progress' => 'قيد التنفيذ',
-                'completed' => 'مكتمل',
-                'canceled' => 'ملغي',
-            ];
             $requestTypeMapping = [
                 'DISPATCH' => 'طلب إرسال إسعاف',
-                'NOTIFY' => 'إبلاغ/إشعار بحالة',
+                'NOTIFY' => 'إبلاغ/بحالة طارئة ',
             ];
             $displayRequestType = $requestTypeMapping[$emergencyRequest->request_type] ?? 'غير معروف';
         ?>
@@ -66,26 +60,26 @@
                         <div class="col-md-6">
                             <h4><i class="fas fa-clipboard-list"></i> تفاصيل الطوارئ</h4>
                             
-                            
                             <p><strong>نوع الطلب:</strong> <span class="badge badge-primary"><?php echo e($displayRequestType); ?></span></p>
 
                             <p><strong>تاريخ الإنشاء:</strong> <?php echo e($emergencyRequest->created_at->format('Y-m-d H:i')); ?></p>
                             
-                            
                             <p><strong>نوع الإصابة:</strong> <?php echo e($emergencyRequest->injuryType->injury_name ?? 'غير محدد'); ?></p>
                             
                             <p><strong>وصف المريض:</strong> <?php echo e($emergencyRequest->description ?? 'لا يوجد وصف'); ?></p>
-                            <p><strong>الحالة الحالية:</strong> <?php echo $__env->make('admin.emergency_requests.partials.status_badge', ['status' => $emergencyRequest->status], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?></p>
+                            
+                            
+<p><strong>الحالة الحالية:</strong> 
+    <?php echo $__env->make('admin.emergency_requests.partials.status_badge', ['status' => $emergencyRequest->status], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+</p>
                             <p><strong>المستشفى المسند:</strong> <?php echo e($emergencyRequest->hospital->hospital_name ?? 'لم يتم الإسناد'); ?></p>
                             
                             <hr>
 
-                            
                             <?php if($emergencyRequest->rejection_reason): ?> 
                                 <p class="text-danger"><strong>سبب الرفض النهائي:</strong> <?php echo e($emergencyRequest->rejection_reason); ?></p>
                                 <hr>
                             <?php endif; ?>
-                            
                             
                             <?php 
                                 $lastHistory = $emergencyRequest->statusHistory->first(); 
@@ -113,7 +107,6 @@
                     <?php echo csrf_field(); ?>
                     <?php echo method_field('PUT'); ?>
                     <div class="card-body">
-                        
                         <div class="form-group">
                             <label for="status">تغيير الحالة يدوياً</label>
                             <select name="status" id="status" class="form-control <?php $__errorArgs = ['status'];
@@ -142,7 +135,6 @@ endif;
 unset($__errorArgs, $__bag); ?>
                         </div>
 
-                        
                         <div class="form-group">
                             <label for="hospital_id">إعادة إسناد إلى مستشفى آخر</label>
                             <select name="hospital_id" id="hospital_id" class="form-control <?php $__errorArgs = ['hospital_id'];
@@ -170,7 +162,6 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                         </div>
-                        
                         
                         <div class="form-group">
                             <label for="reason">سبب التعديل الإداري (يظهر في سجل التاريخ)</label>
@@ -211,7 +202,8 @@ unset($__errorArgs, $__bag); ?>
                             <li class="item">
                                 <div class="product-info">
                                     <span class="product-title">
-                                        <?php echo e($statusMapping[$history->status] ?? ucfirst(str_replace('_', ' ', $history->status))); ?>
+                                        
+                                        <?php echo e($statusMapping[$history->status] ?? $history->status); ?>
 
                                         <span class="badge badge-secondary float-right"><?php echo e($history->created_at->format('Y-m-d H:i:s')); ?></span>
                                     </span>
@@ -239,13 +231,12 @@ unset($__errorArgs, $__bag); ?>
                 <div class="card-header">
                     <h3 class="card-title"><i class="fas fa-map-marker-alt"></i> موقع الطوارئ</h3>
                 </div>
-                <div class="card-body p-0"> 
+                <div class="card-body p-0">
                     <?php if($emergencyRequest->location): ?>
                         <div class="p-2 border-bottom bg-light">
                             <small class="d-block"><strong>العنوان:</strong> <?php echo e($emergencyRequest->location->address ?? 'غير متوفر'); ?></small>
                             <small class="d-block"><strong>الإحداثيات:</strong> <?php echo e($emergencyRequest->location->latitude); ?>, <?php echo e($emergencyRequest->location->longitude); ?></small>
                         </div>
-                        
                         
                         <div style="width: 100%; height: 350px;">
                             <iframe 
